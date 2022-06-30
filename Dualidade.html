@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+	<canvas id="canvas"></canvas>
+</body>
+	<script>
+
+		var sw = window.innerWidth,sh = window.innerHeight,canvas = document.getElementById("canvas"),ctx = canvas.getContext("2d");
+
+		canvas.width = sw;
+		canvas.height = sh;
+		canvas.onclick = ()=>{ying=!ying};
+
+		var px = sw/2, py = sh/2, pv = 1.5, pa = 0, pc = .6, pr = 100, ppr = 20, ying = true, particles = [], pd = 0.5, pdd = 0.05, mc = 0;
+
+		var mx = 200, my = 300;
+
+		function color(){
+			return ying?"white":"black";
+		}
+
+		function backgroundColor(){
+			return !ying?"white":"black";
+		}
+
+		function clearScreen(){
+			ctx.fillStyle = backgroundColor();
+			ctx.fillRect(0, 0, sw, sh);
+		}
+
+		function pick(){
+			let dist = Math.sqrt((Math.pow(Math.abs(px-mx),2)+Math.pow(Math.abs(py-my),2)),2);
+			return (dist < pr);
+		}
+
+		function colides(x1,y1,r1,x2,y2,r2){
+			let dist = Math.sqrt((Math.pow(Math.abs(x1-x2),2)+Math.pow(Math.abs(y1-y2),2)),2);
+			return (dist < r1+r2);
+		}
+
+		function update(){
+
+			if(mc >= 10 || pd <= 0){
+				alert("you win")
+				px = sw/2, py = sh/2, pa = 0, ying = true, particles = [], pd = 0.5, mc = 0;
+			}
+
+			for(var i = 0; i<particles.length; i++){
+				let p = particles[i];
+				if(p.r < pr/3){
+					let dist = Math.sqrt((Math.pow(Math.abs(px-p.x),2)+Math.pow(Math.abs(py-p.y),2)),2);
+					if(colides(px,py,pr,p.x,p.y,p.r)){
+						alert("you lose")
+						px = sw/2, py = sh/2, pa = 0, ying = true, particles = [], pd = 0.5, mc = 0;
+					}
+				}
+				
+			}
+
+			if(pick()){
+				while(pick()){
+					mx = Math.random()*sw;
+					my = Math.random()*sh;
+				}
+				pd-=pdd;
+				mc++;
+			}
+			
+			pa += ying ? pc : -pc;
+
+			px += (pv) * Math.sin((Math.PI/180) * pa);
+			py += (pv) * Math.cos((Math.PI/180) * pa);
+
+			if(px < 0){
+				px = sw + px;
+			}
+
+			if(px > sw){
+				px = px % sw;
+			}
+
+			if(py < 0){
+				py = sh + py;
+			}
+
+			if(py > sh){
+				py = py % sh;
+			}
+		}
+
+		function render(){
+
+			for(var i = 0; i<particles.length; i++){
+				let p = particles[i];
+				p.r -= pd;
+				if(p.r >= 0){
+					ctx.beginPath();
+					ctx.fillStyle = color();
+					ctx.arc(p.x, p.y, p.r, 0, 2 * Math.PI, false);
+					ctx.fill();
+				}else{
+					particles.splice(i,1);
+				}	
+			}
+
+			ctx.beginPath();
+			ctx.fillStyle = color();
+			ctx.arc(px, py, pr, 0, 2 * Math.PI, false);
+			ctx.fill();
+
+			particles.push({x:px,y:py,r:pr})
+
+			ctx.beginPath();
+			ctx.fillStyle = backgroundColor();
+			ctx.arc(px, py, ppr, 0, 2 * Math.PI, false);
+			ctx.fill();
+
+			ctx.beginPath();
+			ctx.fillStyle = color();
+			ctx.arc(mx, my, ppr, 0, 2 * Math.PI, false);
+			ctx.fill();
+
+		}
+
+		setInterval(()=>{
+			update();
+			clearScreen();
+			render();
+		},1)
+
+	</script>
+</html>
