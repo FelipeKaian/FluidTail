@@ -2,19 +2,31 @@
 <html>
 <head>
 	<title></title>
+	<style>
+		body, html {
+			height: 100%;
+			margin: 0;
+			overflow: hidden;
+		}
+		
+		canvas {
+			display: block;
+		}
+	</style>
 </head>
 <body>
 	<canvas id="canvas"></canvas>
-</body>
-	<script>
 
-		var sw = window.innerWidth,sh = window.innerHeight,canvas = document.getElementById("canvas"),ctx = canvas.getContext("2d");
+	<script>
+		var sw = window.innerWidth, sh = window.innerHeight;
+		var canvas = document.getElementById("canvas");
+		var ctx = canvas.getContext("2d");
 
 		canvas.width = sw;
 		canvas.height = sh;
 		canvas.onclick = ()=>{ying=!ying};
 
-		var px = sw/2, py = sh/2, pv = 1.5, pa = 0, pc = .6, pr = 100, ppr = 20, ying = true, particles = [], pd = 0.5, pdd = 0.05, mc = 0;
+		var px = sw/2, py = sh/2, pv = 2.5, pa = 0, pc = .9, pr = 90, ppr = 20, ying = true, particles = [], pd = 0.8, pdd = 0.05, mc = 0;
 
 		var mx = 200, my = 300;
 
